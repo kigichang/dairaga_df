@@ -24,4 +24,6 @@ object Dependencies {
   lazy val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
 
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.3.1"
+
+  lazy val commonLang = "org.apache.commons" % "commons-lang3" % "3.5"
 }
