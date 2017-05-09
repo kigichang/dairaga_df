@@ -4,7 +4,6 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import com.sun.net.httpserver.HttpServer
 import dairaga.key._
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -19,8 +18,8 @@ trait HttpServer extends ClusterNode {
 
   val route: Route
 
-  override def run(): Unit = {
-    super.run()
+  override def run(name: String): Unit = {
+    super.run(name)
 
     implicit val system: ActorSystem = super.system
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -28,19 +27,9 @@ trait HttpServer extends ClusterNode {
 
     val config = system.settings.config
 
-    val host = try {
-      config.getString(HttpIp)
-    }
-    catch {
-      case NonFatal(_) => cluster.selfAddress.host.getOrElse("127.0.0.1")
-    }
+    val host = if (config.hasPath(HttpIp)) config.getString(HttpIp) else cluster.selfAddress.host.getOrElse("127.0.0.1")
 
-    val port = try {
-      config.getInt(HttpPort)
-    }
-    catch {
-      case NonFatal(_) => 8080
-    }
+    val port = if (config.hasPath(HttpPort)) config.getInt(HttpPort) else 8080
 
     _binding = Http().bindAndHandle(route, host, port)
   }

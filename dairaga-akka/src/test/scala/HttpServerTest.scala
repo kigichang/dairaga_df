@@ -28,7 +28,7 @@ class HttpServerTest extends FlatSpec with Matchers with BeforeAndAfterAll {
   }
 
   override def beforeAll(): Unit = {
-    http.run()
+    http.run("")
   }
 
   override def afterAll(): Unit = {

@@ -22,7 +22,7 @@ import scala.util.control.NonFatal
 object AkkaUtils {
 
   protected def address(config: Config): Option[String] = {
-    if (config.getBoolean(XVNetworkAutoDetect)) {
+    if (config.hasPath(XVNetworkAutoDetect) && config.getBoolean(XVNetworkAutoDetect)) {
       val candidate = config.getStringList(XVNetworkInterfaces)
 
       enumerationAsScalaIterator(NetworkInterface.getNetworkInterfaces).find(x =>
@@ -35,27 +35,19 @@ object AkkaUtils {
     } else None
   }
 
-  protected def host(config: Config): String = {
-    try {
-      val candidate = address(config)
-      if (candidate.isDefined) candidate.get else config.getString(ServerIp)
-    }
-    catch {
-      case NonFatal(_) => "127.0.0.1"
-    }
-  }
+  protected def host(config: Config): String = address(config).getOrElse(
+    if(config.hasPath(ServerIp)) config.getString(ServerIp)
+    else "127.0.0.1"
+  )
 
-  protected def port(config: Config): Int = {
-    try {
-      config.getInt(ServerPort)
-    }
-    catch {
-      case NonFatal(_) => 30000 + Random.nextInt(10000)
-    }
-  }
 
-  def loadConfig(file: String): Config = {
-    val config = if (file == "") DairagaConfig.load else DairagaConfig.load(file)
+  protected def port(config: Config): Int =
+    if (config.hasPath(ServerPort)) config.getInt(ServerPort)
+    else 30000 + Random.nextInt(20000)
+
+
+  def loadConfig(name: String): Config = {
+    val config = if (name == "") DairagaConfig.load else DairagaConfig.load(name)
 
     val akkaConfig =
       ConfigFactory.parseString(s"akka.remote.netty.tcp.port=${port(config)}")
@@ -64,8 +56,8 @@ object AkkaUtils {
     DairagaConfig.resolve(akkaConfig, config)
   }
 
-  def cluster(seeds: immutable.Seq[Address], file: String = ""): Cluster = {
-    val system = ActorSystem(AkkaClusterName, loadConfig(file))
+  def cluster(seeds: immutable.Seq[Address], config: Config): Cluster = {
+    val system = ActorSystem(AkkaClusterName, config)
     val cluster = Cluster(system)
 
     val joinSeeds = if (seeds.nonEmpty) seeds else immutable.Seq(cluster.selfAddress)
@@ -74,6 +66,8 @@ object AkkaUtils {
 
     cluster
   }
+
+  def cluster(seeds: immutable.Seq[Address], name: String = ""): Cluster = cluster(seeds, loadConfig(name))
 
   def close(cluster: Cluster): Future[Terminated] = {
     cluster.leave(cluster.selfAddress)

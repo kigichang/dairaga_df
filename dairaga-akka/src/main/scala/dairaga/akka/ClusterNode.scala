@@ -1,7 +1,9 @@
 package dairaga.akka
 
-import akka.actor.{ActorSystem, Address}
+import akka.actor.{ActorRef, ActorSystem, Address, Props}
 import akka.cluster.Cluster
+import akka.cluster.pubsub.DistributedPubSubMediator.Subscribe
+import dairaga.env._
 
 import scala.collection.immutable
 /**
@@ -12,6 +14,8 @@ trait ClusterNode {
   private var _cluster: Cluster = null
 
   private var _system: ActorSystem = null
+
+  //private var _entry: ActorRef = null
 
   def seeds: immutable.Seq[Address]
 
@@ -25,15 +29,29 @@ trait ClusterNode {
 
   def afterRun(): Unit = Unit
 
-  def run(): Unit = {
+  def run(name: String): Unit = {
     preStart()
-    _cluster = AkkaUtils.cluster(seeds)
+    _cluster = AkkaUtils.cluster(seeds, name)
     _system = _cluster.system
+    /*_entry = _system.actorOf(Props(new DairagaActor {
+
+      mediator ! Subscribe(XVClusterInfo, self)
+
+      override def receive: Receive = {
+        case XVPing =>
+          sender() ! XVRegister
+
+        case XVShutdown =>
+          shutdown()
+
+
+      }
+    }), XVInternActor)*/
     afterRun()
   }
 
   def shutdown(): Unit = {
-    AkkaUtils.shutdown(_cluster)
-    postStop()
+    _cluster.leave(_cluster.selfAddress)
+    _system.terminate().onComplete(_ => postStop())(_system.dispatcher)
   }
 }

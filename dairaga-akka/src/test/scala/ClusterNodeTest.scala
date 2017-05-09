@@ -26,7 +26,7 @@ class ClusterNodeTest extends FlatSpec with Matchers with BeforeAndAfterAll {
 
 
   override def beforeAll(): Unit = {
-    node.run()
+    node.run("")
   }
 
   "a simple node" should "echo msg" in {

@@ -17,4 +17,6 @@ package object env {
 
   val TerminateWait: Duration = 60 seconds
 
+  val XVInternActor = "xv-intern"
+  val XVClusterInfo = "DairagaXVInfo"
 }
