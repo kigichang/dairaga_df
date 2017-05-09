@@ -1,11 +1,10 @@
 import sbt._
-import sbt.Keys._
 
 object Dependencies {
 
-  val akkaVersion = "2.5.1"
+  val akkaVersion: String = "2.5.1"
 
-  lazy val akkaCluster =
+  lazy val akkaCluster: Seq[ModuleID] =
     Seq(
       "com.typesafe.akka" %% "akka-slf4j",
       "com.typesafe.akka" %% "akka-cluster",
@@ -19,13 +18,13 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test")
 
-  lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.0.1"
+  lazy val scalaTest: ModuleID = "org.scalatest" %% "scalatest" % "3.0.1"
 
-  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
+  lazy val logback: ModuleID = "ch.qos.logback" % "logback-classic" % "1.2.3"
 
-  lazy val typesafeConfig = "com.typesafe" % "config" % "1.3.1"
+  lazy val typesafeConfig: ModuleID = "com.typesafe" % "config" % "1.3.1"
 
-  lazy val commonLang = "org.apache.commons" % "commons-lang3" % "3.5"
+  lazy val commonLang: ModuleID = "org.apache.commons" % "commons-lang3" % "3.5"
 
-  lazy val guice = "com.google.inject" % "guice" % "4.1.0"
+  lazy val guice: ModuleID = "com.google.inject" % "guice" % "4.1.0"
 }

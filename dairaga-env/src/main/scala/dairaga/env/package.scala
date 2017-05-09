@@ -16,5 +16,5 @@ package object env {
   val Charset: String = "UTF-8"
 
   val TerminateWait: Duration = 60 seconds
-  
+
 }
