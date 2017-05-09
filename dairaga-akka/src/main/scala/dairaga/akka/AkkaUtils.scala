@@ -6,12 +6,12 @@ import dairaga.env._
 import dairaga.key._
 import java.net.NetworkInterface
 
-import akka.actor.{ActorSystem, AddressFromURIString}
+import akka.actor.{ActorSystem, Address, Terminated}
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueFactory}
 
 import scala.collection.immutable
 import scala.collection.JavaConverters._
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Random
 import scala.util.control.NonFatal
@@ -64,20 +64,25 @@ object AkkaUtils {
     DairagaConfig.resolve(akkaConfig, config)
   }
 
-  def cluster(seeds: immutable.Seq[String], file: String = ""): Cluster = {
+  def cluster(seeds: immutable.Seq[Address], file: String = ""): Cluster = {
     val system = ActorSystem(AkkaClusterName, loadConfig(file))
     val cluster = Cluster(system)
 
-    val joinSeeds = if (seeds.nonEmpty) seeds.map(AddressFromURIString.parse(_)) else immutable.Seq(cluster.selfAddress)
+    val joinSeeds = if (seeds.nonEmpty) seeds else immutable.Seq(cluster.selfAddress)
 
     cluster.joinSeedNodes(joinSeeds)
 
     cluster
   }
 
-  def shutdown(cluster: Cluster, atMost: Duration = TerminateWait) = {
+  def close(cluster: Cluster): Future[Terminated] = {
     cluster.leave(cluster.selfAddress)
-    Await.result(cluster.system.terminate(), atMost)
+    cluster.system.terminate()
+  }
+
+
+  def shutdown(cluster: Cluster, atMost: Duration = TerminateWait): Terminated = {
+    Await.result(close(cluster), atMost)
   }
 
 }

@@ -8,7 +8,7 @@ import scala.collection.immutable
   */
 trait AkkaStatus {
 
-  def read:immutable.Seq[Address]
+  def seeds:immutable.Seq[Address]
 
   def add(address: Address)
 

@@ -13,7 +13,7 @@ package object common {
           resource.close()
       }
       catch {
-        case NonFatal(ex) =>
+        case NonFatal(_) =>
       }
     }
   }

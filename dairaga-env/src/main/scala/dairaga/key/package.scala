@@ -11,4 +11,7 @@ package object key {
 
   val ServerIp = "server.ip"
   val ServerPort = "server.port"
+
+  val HttpIp = "http.ip"
+  val HttpPort = "http.port"
 }
