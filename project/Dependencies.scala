@@ -26,4 +26,6 @@ object Dependencies {
   lazy val typesafeConfig = "com.typesafe" % "config" % "1.3.1"
 
   lazy val commonLang = "org.apache.commons" % "commons-lang3" % "3.5"
+
+  lazy val guice = "com.google.inject" % "guice" % "4.1.0"
 }

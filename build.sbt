@@ -32,7 +32,8 @@ lazy val core = project.in(file("dairaga-core"))
   .disablePlugins(AssemblyPlugin)
   .settings(
     Common.commonSettings,
-    libraryDependencies ++= akkaHttp ++ akkaCluster ++ Seq(
+    libraryDependencies ++= Seq(
+      guice,
       logback,
       scalaTest
     )
@@ -46,4 +47,4 @@ lazy val akka = project.in(file("dairaga-akka"))
       logback,
       scalaTest
     )
-  ).dependsOn(config)
+  ).dependsOn(common, config, env)

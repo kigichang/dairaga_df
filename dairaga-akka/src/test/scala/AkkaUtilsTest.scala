@@ -29,7 +29,7 @@ class AkkaUtilsTest extends FlatSpec with Matchers {
     }
 
     tmp.isSuccess should === (true)
-    val cluster = tmp.get
+    println(cluster.settings.config.getStringList(XVNetworkInterfaces))
     cluster.selfAddress.host.get shouldNot be ("127.0.0.1")
     AkkaUtils.shutdown(tmp.get)
   }

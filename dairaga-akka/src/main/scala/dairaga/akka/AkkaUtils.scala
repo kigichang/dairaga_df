@@ -6,7 +6,7 @@ import dairaga.env._
 import dairaga.key._
 import java.net.NetworkInterface
 
-import akka.actor.{ActorSystem, Address, AddressFromURIString}
+import akka.actor.{ActorSystem, AddressFromURIString}
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueFactory}
 
 import scala.collection.immutable
@@ -55,11 +55,6 @@ object AkkaUtils {
   }
 
   def loadConfig(file: String): Config = {
-
-    //require(seeds.nonEmpty)
-
-    //val seedAddr = seeds.map(seed => s"""akka.cluster.seed-nodes += "${seed.toString}"""").mkString("\n")
-
     val config = if (file == "") DairagaConfig.load else DairagaConfig.load(file)
 
     val akkaConfig =
