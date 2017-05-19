@@ -27,4 +27,6 @@ object Dependencies {
   lazy val commonLang: ModuleID = "org.apache.commons" % "commons-lang3" % "3.5"
 
   lazy val guice: ModuleID = "com.google.inject" % "guice" % "4.1.0"
+
+  lazy val playJson: ModuleID = "com.typesafe.play" % "play-json_2.12" % "2.6.0-M7"
 }

@@ -22,7 +22,7 @@ class HttpServerTest extends FlatSpec with Matchers with BeforeAndAfterAll {
   }
 
   "a simple http server" should "echo hello" in {
-    val line = Process("curl --include http://127.0.0.1:8080/").lineStream.mkString
+    val line = Process("curl --include http://127.0.0.1:15080/").lineStream.mkString
 
     line should endWith ("hello")
   }

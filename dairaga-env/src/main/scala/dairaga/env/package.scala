@@ -19,4 +19,6 @@ package object env {
 
   val XVInternActor = "xv-intern"
   val XVClusterInfo = "DairagaXVInfo"
+
+  val XVHttpPort = 15080
 }

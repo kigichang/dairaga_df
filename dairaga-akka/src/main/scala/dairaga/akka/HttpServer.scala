@@ -5,6 +5,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import dairaga.key._
+import dairaga.env._
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.control.NonFatal
@@ -29,7 +30,7 @@ trait HttpServer extends ClusterNode {
 
     val host = if (config.hasPath(HttpIp)) config.getString(HttpIp) else cluster.selfAddress.host.getOrElse("127.0.0.1")
 
-    val port = if (config.hasPath(HttpPort)) config.getInt(HttpPort) else 8080
+    val port = if (config.hasPath(HttpPort)) config.getInt(HttpPort) else XVHttpPort
 
     _binding = Http().bindAndHandle(route, host, port)
   }
