@@ -6,7 +6,7 @@ import play.api.libs.json.Json
 /**
   * Created by kigi on 19/05/2017.
   */
-class Traffic {
+object Traffic {
   case class WebTraffic(override val customerId: String,
                         override val customerUserId: Option[String],
                         override val xvUserId: String,
