@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  val akkaVersion: String = "2.5.1"
+  val akkaVersion: String = "2.5.2"
 
   lazy val akkaCluster: Seq[ModuleID] =
     Seq(
