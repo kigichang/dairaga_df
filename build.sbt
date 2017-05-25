@@ -2,7 +2,7 @@ import Dependencies._
 
 name := """dairaga"""
 
-lazy val root = project.in(file(".")).aggregate(env, common, config, core, msg, akka, collector, dashboard)
+lazy val root = project.in(file(".")).aggregate(env, common, config, core, msg, akka, master, collector, dashboard)
 
 lazy val env = project.in(file("dairaga-env"))
   .disablePlugins(AssemblyPlugin, PlayScala)
@@ -60,6 +60,17 @@ lazy val akka = project.in(file("dairaga-akka"))
       playJson % Test
     )
   ).dependsOn(common, config, env)
+
+lazy val master = project.in(file("dairaga-master")).enablePlugins(AssemblyPlugin).disablePlugins(PlayScala)
+  .settings(
+    Common.commonSettings,
+    Common.assemblySettings,
+    libraryDependencies ++= Seq(
+      logback,
+      playJson,
+      scalaTest
+    )
+  ).dependsOn(akka)
 
 lazy val collector = project.in(file("dairaga-collector"))
   .enablePlugins(AssemblyPlugin).disablePlugins(PlayScala)
