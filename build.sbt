@@ -61,10 +61,13 @@ lazy val akka = project.in(file("dairaga-akka"))
     )
   ).dependsOn(common, config, env)
 
-lazy val master = project.in(file("dairaga-master")).enablePlugins(AssemblyPlugin).disablePlugins(PlayScala)
+lazy val master = project.in(file("dairaga-master"))
+  .enablePlugins(AssemblyPlugin)
+  .disablePlugins(PlayScala)
   .settings(
     Common.commonSettings,
     Common.assemblySettings,
+    mainClass in assembly := Some("dairaga.master.MasterServer"),
     libraryDependencies ++= Seq(
       logback,
       playJson,
