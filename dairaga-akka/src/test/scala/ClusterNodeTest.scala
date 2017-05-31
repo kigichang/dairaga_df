@@ -54,7 +54,7 @@ class ClusterNodeTest extends TestKit(TestNode.system) with ImplicitSender with 
 
     "be terminated when got XVShutdown" in {
       TestNode.inter ! XVShutdown
-      awaitCond(TestNode.terminated == true)
+      awaitCond(TestNode.terminated == true, 10 seconds)
     }
   }
 

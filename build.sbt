@@ -2,7 +2,7 @@ import Dependencies._
 
 name := """dairaga"""
 
-lazy val root = project.in(file(".")).aggregate(env, common, config, core, msg, akka, master, collector, dashboard)
+lazy val root = project.in(file(".")).aggregate(env, common, config, data, core, msg, akka, master, collector, dashboard, mariadb)
 
 lazy val env = project.in(file("dairaga-env"))
   .disablePlugins(AssemblyPlugin, PlayScala)
@@ -50,6 +50,15 @@ lazy val core = project.in(file("dairaga-core"))
     )
   ).dependsOn(env, common, config)
 
+lazy val data = project.in(file("dairaga-data"))
+  .disablePlugins(AssemblyPlugin, PlayScala)
+  .settings(
+    Common.commonSettings,
+    libraryDependencies ++= Dependencies.akka ++ Seq(
+      scalaTest
+    )
+  )
+
 lazy val akka = project.in(file("dairaga-akka"))
   .disablePlugins(AssemblyPlugin, PlayScala)
   .settings(
@@ -71,6 +80,7 @@ lazy val master = project.in(file("dairaga-master"))
     libraryDependencies ++= Seq(
       logback,
       playJson,
+      Dependencies.guice,
       scalaTest
     )
   ).dependsOn(akka)
@@ -99,3 +109,12 @@ lazy val dashboard = project.in(file("dairaga-dashboard"))
       "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M3" % Test
     )
   )
+
+lazy val mariadb = project.in(file("dairaga-data-mariadb"))
+  .disablePlugins(AssemblyPlugin, PlayScala)
+  .settings(
+    Common.commonSettings,
+    libraryDependencies ++= Seq(
+      Dependencies.mariadb
+    )
+  ).dependsOn(common, data)

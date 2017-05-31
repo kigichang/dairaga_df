@@ -4,13 +4,17 @@ object Dependencies {
 
   val akkaVersion: String = "2.5.2"
 
-  lazy val akkaCluster: Seq[ModuleID] =
+  lazy val akka: Seq[ModuleID] = Seq(
+    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
+  )
+
+  lazy val akkaCluster: Seq[ModuleID] = akka ++
     Seq(
       "com.typesafe.akka" %% "akka-slf4j",
       "com.typesafe.akka" %% "akka-cluster",
       "com.typesafe.akka" %% "akka-cluster-tools",
-      "com.typesafe.akka" %% "akka-cluster-metrics").map (_ % akkaVersion) :+
-      ("com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test")
+      "com.typesafe.akka" %% "akka-cluster-metrics").map(_ % akkaVersion)
 
   val akkaHttpVersion = "10.0.6"
 
@@ -29,4 +33,7 @@ object Dependencies {
   lazy val guice: ModuleID = "com.google.inject" % "guice" % "4.1.0"
 
   lazy val playJson: ModuleID = "com.typesafe.play" % "play-json_2.12" % "2.6.0-M7"
+
+  lazy val mariadb: ModuleID = "org.mariadb.jdbc" % "mariadb-java-client" % "2.0.1"
+
 }
