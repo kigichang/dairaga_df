@@ -7,7 +7,7 @@ object Common {
 
   lazy val commonSettings = inThisBuild(
     Seq(
-      organization := "io.kigi.dairaga",
+      organization := "me.dataforce.dairaga",
       version := "0.0.1-SNAPSHOT",
       scalaVersion := "2.12.2")
   ) ++ Seq(
