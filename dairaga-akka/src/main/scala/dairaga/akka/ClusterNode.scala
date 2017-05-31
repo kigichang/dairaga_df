@@ -15,7 +15,7 @@ trait ClusterNode {
 
   private var _system: ActorSystem = null
 
-  //private var _entry: ActorRef = null
+  private var _intern: ActorRef = null
 
   def seeds: immutable.Seq[Address]
 
@@ -23,17 +23,20 @@ trait ClusterNode {
 
   def system: ActorSystem = _system
 
+  def inter: ActorRef = _intern
+
   def preStart(): Unit = Unit
 
   def postStop(): Unit = Unit
 
   def afterRun(): Unit = Unit
 
-  def run(name: String): Unit = {
+  def run(name: String = AkkaClusterName): Unit = {
     preStart()
     _cluster = AkkaUtils.cluster(seeds, name)
     _system = _cluster.system
-    /*_entry = _system.actorOf(Props(new DairagaActor {
+
+    _intern = _system.actorOf(Props(new DairagaActor {
 
       mediator ! Subscribe(XVClusterInfo, self)
 
@@ -46,7 +49,8 @@ trait ClusterNode {
 
 
       }
-    }), XVInternActor)*/
+    }), XVInternActor)
+
     afterRun()
   }
 
