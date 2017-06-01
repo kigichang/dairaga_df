@@ -2,12 +2,12 @@ import akka.actor.{Address, AddressFromURIString}
 import com.typesafe.config.ConfigFactory
 import dairaga.common.SQLUtils
 import dairaga.mariadb.AkkaSeedsImpl
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
 /**
   * Created by kigi on 31/05/2017.
   */
-class AkkaSeedsTest extends FlatSpec with Matchers {
+class AkkaSeedsTest extends FlatSpec with Matchers with BeforeAndAfterAll {
 
   val address = Address("akka", "test", "127.0.0.1", 2552)
 
@@ -21,6 +21,10 @@ class AkkaSeedsTest extends FlatSpec with Matchers {
     val tmp = SQLUtils.fastQuery(url, s"select address from seeds where address = '${addr}' and status = 1")
 
     tmp.map(AddressFromURIString(_))
+  }
+
+  override def beforeAll(): Unit = {
+    SQLUtils.fastUpdate(url, "delete from seeds")
   }
 
   "AkkaSeeds" should "write address" in {
