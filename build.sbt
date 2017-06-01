@@ -2,7 +2,7 @@ import Dependencies._
 
 name := """dairaga"""
 
-lazy val root = project.in(file(".")).aggregate(env, common, config, data, core, msg, akka, master, collector, dashboard, mariadb)
+lazy val root = project.in(file(".")).aggregate(env, common, config, data, core, msg, akka, master, collector, dashboard, gcp, mariadb)
 
 lazy val env = project.in(file("dairaga-env"))
   .disablePlugins(AssemblyPlugin, PlayScala)
@@ -83,7 +83,7 @@ lazy val master = project.in(file("dairaga-master"))
       Dependencies.guice,
       scalaTest
     )
-  ).dependsOn(akka)
+  ).dependsOn(akka, data, gcp, mariadb)
 
 lazy val collector = project.in(file("dairaga-collector"))
   .enablePlugins(AssemblyPlugin).disablePlugins(PlayScala)
@@ -117,4 +117,10 @@ lazy val mariadb = project.in(file("dairaga-data-mariadb"))
     libraryDependencies ++= Seq(
       Dependencies.mariadb
     )
+  ).dependsOn(common, data)
+
+lazy val gcp = project.in(file("dairaga-data-gcp"))
+  .disablePlugins(AssemblyPlugin, PlayScala)
+  .settings(
+    Common.commonSettings
   ).dependsOn(common, data)
