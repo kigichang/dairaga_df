@@ -24,13 +24,13 @@ class TestConfig extends FlatSpec with Matchers {
     config.getBoolean(XVNetworkAutoDetect) should === (true)
   }
 
-  "Load default application config" should "override default value" in {
+  /*"Load default application config" should "override default value" in {
     val config = DairagaConfig.load
     val list = config.getStringList(XVNetworkInterfaces)
     list.size() should === (1)
     list.get(0) should === ("test")
     config.getBoolean(XVNetworkAutoDetect) should === (false)
-  }
+  }*/
 
 
 }
