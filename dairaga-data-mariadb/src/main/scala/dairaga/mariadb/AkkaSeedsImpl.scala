@@ -56,7 +56,7 @@ class AkkaSeedsImpl extends AkkaSeeds {
 
   override def remove(address: Address): Unit = {
     val sql = s"""delete from seeds where address = '${address.toString}'"""
-
-    SQLUtils.fastQuery(url, sql)
+    println(s"mariadb: $sql")
+    SQLUtils.fastUpdate(url, sql)
   }
 }
