@@ -37,7 +37,7 @@ object AkkaUtils {
 
   protected def host(config: Config): String = address(config).getOrElse(
     if(config.hasPath(ServerIp)) config.getString(ServerIp)
-    else "127.0.0.1"
+    else address(config).getOrElse("127.0.0.1")
   )
 
 
