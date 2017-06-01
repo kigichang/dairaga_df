@@ -1,12 +1,12 @@
 package dairaga.akka
 
-import akka.actor.{ActorRef, ActorSystem, Address, Props}
+import akka.actor.{ActorRef, ActorSystem, Address, Props, Terminated}
 import akka.cluster.Cluster
 import akka.cluster.pubsub.DistributedPubSubMediator.Subscribe
 import dairaga.env._
 
 import scala.collection.immutable
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 /**
@@ -34,10 +34,11 @@ trait ClusterNode {
 
   def afterRun(): Unit = Unit
 
-  def run(name: String = AkkaClusterName): Unit = {
+  def run(resourceName: String = ""): Unit = {
     preStart()
-    _cluster = AkkaUtils.cluster(seeds, name)
+    _cluster = AkkaUtils.cluster(seeds, resourceName)
     _system = _cluster.system
+    _system.registerOnTermination(postStop)
 
     _intern = _system.actorOf(Props(new DairagaActor {
 
@@ -59,6 +60,7 @@ trait ClusterNode {
 
   def shutdown(): Unit = {
     _cluster.leave(_cluster.selfAddress)
-    _system.terminate().onComplete(_ => postStop())(_system.dispatcher)
+    //_system.terminate().onComplete(_ => postStop())(_system.dispatcher)
+    _system.terminate()
   }
 }
