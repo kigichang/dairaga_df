@@ -14,7 +14,6 @@ import scala.collection.JavaConverters._
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Random
-import scala.util.control.NonFatal
 
 /**
   * Created by kigi on 08/05/2017.

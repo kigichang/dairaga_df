@@ -32,6 +32,6 @@ package object msg {
     def json(implicit writes: Writes[T]): String =
       s"""{"data":${Json.stringify(Json.toJson(self))},"created":${self.created}}"""
 
-    override def toString = json
+    //override def toString = json
   }
 }

@@ -1,66 +1,101 @@
 package dairaga.akka
 
-import akka.actor.{ActorRef, ActorSystem, Address, Props, Terminated}
+import akka.actor.{ActorContext, ActorRef, ActorSystem, Address, Props, Terminated}
 import akka.cluster.Cluster
 import akka.cluster.pubsub.DistributedPubSubMediator.Subscribe
 import dairaga.env._
+import org.slf4j.LoggerFactory
 
 import scala.collection.immutable
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
 
 /**
   * Created by kigi on 5/8/17.
   */
 trait ClusterNode {
 
-  private var _cluster: Cluster = null
+  private val log = LoggerFactory.getLogger(classOf[ClusterNode])
 
-  private var _system: ActorSystem = null
+  private var _resource: String = ""
 
-  private var _intern: ActorRef = null
+  private var _status: Byte = 0x00
+
+  final def initialized: Boolean = _status == 0x00
+
+  final def started: Boolean = _status == 0x01
+
+  final def terminated: Boolean = _status == 0x02
+
+
+  private[dairaga] lazy val cluster: Cluster = AkkaUtils.cluster(seeds, _resource)
+
+  private[dairaga] lazy val system: ActorSystem = cluster.system
+
+  private[dairaga] lazy val intern: ActorRef = system.actorOf(Props(new DairagaActor {
+
+    mediator ! Subscribe(XVClusterInfo, self)
+
+    override def receive: Receive = {
+      case XVPing =>
+        println(s"self[${self.path.toString}] -> got ping")
+        sender() ! XVRegister
+
+      case XVShutdown =>
+        shutdown()
+
+      case Terminated(terminatedActor) =>
+        childOnTerminated(terminatedActor)
+    }
+
+    override def preStart(): Unit = {
+      super.preStart()
+      internPreStart(context)
+    }
+
+    override def postStop(): Unit = {
+      internPostStop(context)
+      super.postStop()
+    }
+
+  }), XVInternActor/* + dairaga.common.TextUtils.randomAlphaNumeric(16)*/)
 
   def seeds: immutable.Seq[Address]
 
-  def cluster: Cluster = _cluster
-
-  def system: ActorSystem = _system
-
-  def inter: ActorRef = _intern
-
+  /* ClusterNode hook functions start */
   def preStart(): Unit = Unit
 
   def postStop(): Unit = Unit
 
   def afterRun(): Unit = Unit
+  /* ClusterNode hook functions end */
+
+  /* Intern Actor hook functions start */
+  def internPreStart(context: ActorContext): Unit = Unit
+
+  def internPostStop(context: ActorContext): Unit = Unit
+
+  def childOnTerminated(actor: ActorRef): Unit = Unit
+  /* Intern Actor hook functions end */
 
   def run(resourceName: String = ""): Unit = {
+
+    _resource = resourceName
+
     preStart()
-    _cluster = AkkaUtils.cluster(seeds, resourceName)
-    _system = _cluster.system
-    _system.registerOnTermination(postStop)
 
-    _intern = _system.actorOf(Props(new DairagaActor {
+    system.registerOnTermination(postStop)
 
-      mediator ! Subscribe(XVClusterInfo, self)
-
-      override def receive: Receive = {
-        case XVPing =>
-          sender() ! XVRegister
-
-        case XVShutdown =>
-          shutdown()
-
-
-      }
-    }), XVInternActor)
+    log.info(s"intern - ${intern.path.toStringWithAddress(cluster.selfAddress)} started")
 
     afterRun()
+    _status = 0x01
   }
 
   def shutdown(): Unit = {
-    _cluster.leave(_cluster.selfAddress)
-    //_system.terminate().onComplete(_ => postStop())(_system.dispatcher)
-    _system.terminate()
+    if (!terminated) {
+      cluster.leave(cluster.selfAddress)
+      //_system.terminate().onComplete(_ => postStop())(_system.dispatcher)
+      system.terminate()
+      _status = 0x02
+    }
   }
 }

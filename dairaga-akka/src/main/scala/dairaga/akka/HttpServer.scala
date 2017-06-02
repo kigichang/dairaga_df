@@ -19,10 +19,10 @@ trait HttpServer extends ClusterNode {
 
   val route: Route
 
-  override def run(name: String): Unit = {
-    super.run(name)
+  override def run(resourceName: String): Unit = {
+    super.run(resourceName)
 
-    implicit val system: ActorSystem = super.system
+    implicit val _system: ActorSystem = system
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
