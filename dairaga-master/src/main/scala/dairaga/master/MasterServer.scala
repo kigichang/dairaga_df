@@ -1,9 +1,7 @@
 package dairaga.master
 
-import akka.actor.Address
 import com.google.inject.Guice
-import com.typesafe.config.ConfigFactory
-import dairaga.akka.ClusterNode
+import dairaga.akka._
 import dairaga.data.AkkaSeeds
 
 import scala.collection.immutable
@@ -19,7 +17,7 @@ object MasterServer {
 
   val master = new MasterNode(injector.getInstance(classOf[AkkaSeeds]))
 
-  val url = ConfigFactory.load().getString("dairaga.data.mariadb.url")
+  //val url = ConfigFactory.load().getString("dairaga.data.mariadb.url")
 
 
   def main(args: Array[String]): Unit = {
@@ -30,6 +28,23 @@ object MasterServer {
 
     while(cmd != dairaga.cmd.Quit) {
       cmd = StdIn.readLine("Master >>")
+
+      if (cmd != "") {
+        println(s"exec `$cmd`...")
+
+        cmd match {
+          case dairaga.cmd.Ping =>
+            master.master ! XVHeartBeat
+
+          case dairaga.cmd.Shutdown =>
+            master.master ! XVShutdown
+
+          case x if x.startsWith(dairaga.cmd.Close) =>
+            master.master ! MasterActor.MasterClose(x.substring(dairaga.cmd.Close.length + 1))
+
+          case _ =>
+        }
+      }
     }
 
     master.shutdown()

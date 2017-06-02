@@ -21,6 +21,7 @@ final class MasterActor extends DairagaActor {
         if (!actors.contains(sender())) {
           actors += sender()
           context.watch(sender())
+          log.info(s"${sender().path.toString} reply")
         }
       }
 
@@ -35,6 +36,9 @@ final class MasterActor extends DairagaActor {
     case MasterActor.MasterList =>
       sender() ! actors.toSeq
 
+    case MasterActor.MasterClose(host) =>
+      actors.filter(_.path.toString.contains(host)).foreach(_ ! XVShutdown)
+
     case Terminated(terminatedActor) =>
       context.unwatch(terminatedActor)
       actors -= terminatedActor
@@ -45,5 +49,6 @@ final class MasterActor extends DairagaActor {
 object MasterActor {
   val props = Props[MasterActor]
 
-  @SerialVersionUID(1L) final object MasterList
+  @SerialVersionUID(1L) final case object MasterList
+  @SerialVersionUID(1L) final case class MasterClose(host: String)
 }

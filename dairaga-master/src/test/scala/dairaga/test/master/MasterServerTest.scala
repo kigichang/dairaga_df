@@ -30,7 +30,7 @@ object MasterServerTest {
   masterNode.run()
 }
 
-object OtherNode extends ClusterNode {
+class OtherNode extends ClusterNode {
   override def seeds: immutable.Seq[Address] = immutable.Seq(MasterServerTest.masterNode.cluster.selfAddress)
 }
 
@@ -38,8 +38,12 @@ class MasterServerTest extends TestKit(MasterServerTest.masterNode.system) with 
 
   import MasterServerTest._
 
+  val other1 = new OtherNode()
+  val other2 = new OtherNode()
+
   override def beforeAll(): Unit = {
-    OtherNode.run("other")
+    other1.run("other1")
+    other2.run("other2")
   }
 
   "master node" should {
@@ -66,18 +70,20 @@ class MasterServerTest extends TestKit(MasterServerTest.masterNode.system) with 
 
       implicit val timeout = Timeout(5 seconds)
       val tmp = Await.result((masterNode.master ? MasterActor.MasterList).mapTo[Seq[ActorRef]], 5 seconds)
-      println("master intern " + masterNode.intern.path.toString)
-      println("other intern " + OtherNode.intern.path.toString)
-      println("master got " + tmp(0).path.toString)
 
-      tmp.length should === (1)
-      tmp(0).path.toString should === (OtherNode.intern.path.toStringWithAddress(OtherNode.cluster.selfAddress))
+      tmp.length should === (2)
     }
 
+    "close some cluster node" in {
+      masterNode.master ! MasterActor.MasterClose(s"${other1.cluster.selfAddress.host.get}:${other1.cluster.selfAddress.port.get}")
+
+      awaitCond(other1.terminated == true, 10 seconds)
+      other2.terminated should === (false)
+    }
 
     "shutdwon all cluster node exclude self" in {
       masterNode.master ! XVShutdown
-      awaitCond(OtherNode.terminated == true, 10 seconds)
+      awaitCond(other2.terminated == true, 10 seconds)
 
       masterNode.terminated should === (false)
     }
@@ -85,7 +91,8 @@ class MasterServerTest extends TestKit(MasterServerTest.masterNode.system) with 
   }
 
   override def afterAll(): Unit = {
-    OtherNode.shutdown()
+    other1.shutdown()
+    other2.shutdown()
     masterNode.shutdown()
   }
 

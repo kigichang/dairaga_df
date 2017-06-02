@@ -36,7 +36,6 @@ trait ClusterNode {
 
     override def receive: Receive = {
       case XVPing =>
-        println(s"self[${self.path.toString}] -> got ping")
         sender() ! XVRegister
 
       case XVShutdown =>
