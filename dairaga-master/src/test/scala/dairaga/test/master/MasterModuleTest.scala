@@ -1,3 +1,5 @@
+package dairaga.test.master
+
 import com.google.inject.AbstractModule
 import dairaga.data.AkkaSeeds
 

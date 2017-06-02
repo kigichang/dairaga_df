@@ -43,7 +43,8 @@ trait ClusterNode {
         shutdown()
 
       case Terminated(terminatedActor) =>
-        childOnTerminated(terminatedActor)
+        context.unwatch(terminatedActor)
+        childOnTerminated(context, terminatedActor)
     }
 
     override def preStart(): Unit = {
@@ -73,7 +74,7 @@ trait ClusterNode {
 
   def internPostStop(context: ActorContext): Unit = Unit
 
-  def childOnTerminated(actor: ActorRef): Unit = Unit
+  def childOnTerminated(context: ActorContext, actor: ActorRef): Unit = Unit
   /* Intern Actor hook functions end */
 
   def run(resourceName: String = ""): Unit = {
