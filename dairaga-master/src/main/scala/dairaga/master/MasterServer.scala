@@ -2,6 +2,7 @@ package dairaga.master
 
 import com.google.inject.Guice
 import dairaga.akka._
+import dairaga.cmd.{ConsoleCommand, ConsoleCommands, ExecCommand}
 import dairaga.data.AkkaSeeds
 
 import scala.collection.immutable
@@ -19,33 +20,25 @@ object MasterServer {
 
   //val url = ConfigFactory.load().getString("dairaga.data.mariadb.url")
 
+  def exec(cmd: String): Unit = {
+    cmd match {
+      case dairaga.cmd.Ping =>
+        master.master ! XVHeartBeat
+
+      case dairaga.cmd.Shutdown =>
+        master.master ! XVShutdown
+
+      case x if x.startsWith(dairaga.cmd.Close) =>
+        master.master ! MasterActor.MasterClose(x.substring(dairaga.cmd.Close.length + 1))
+      case _ =>
+    }
+  }
 
   def main(args: Array[String]): Unit = {
 
     master.run()
 
-    var cmd = StdIn.readLine("Master >>")
-
-    while(cmd != dairaga.cmd.Quit) {
-      cmd = StdIn.readLine("Master >>")
-
-      if (cmd != "") {
-        println(s"exec `$cmd`...")
-
-        cmd match {
-          case dairaga.cmd.Ping =>
-            master.master ! XVHeartBeat
-
-          case dairaga.cmd.Shutdown =>
-            master.master ! XVShutdown
-
-          case x if x.startsWith(dairaga.cmd.Close) =>
-            master.master ! MasterActor.MasterClose(x.substring(dairaga.cmd.Close.length + 1))
-
-          case _ =>
-        }
-      }
-    }
+    ConsoleCommands("Master", exec).run
 
     master.shutdown()
   }
