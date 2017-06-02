@@ -81,7 +81,7 @@ class MasterServerTest extends TestKit(MasterServerTest.masterNode.system) with 
       other2.terminated should === (false)
     }
 
-    "shutdwon all cluster node exclude self" in {
+    "shutdown all cluster node exclude self" in {
       masterNode.master ! XVShutdown
       awaitCond(other2.terminated == true, 10 seconds)
 

@@ -11,6 +11,12 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.control.NonFatal
 
 /**
+  * An dairaga http server.
+  *
+  * It is implemented by Akka Http.
+  *
+  * It is also an dairaga cluster node
+  *
   * Created by kigi on 5/8/17.
   */
 trait HttpServer extends ClusterNode {
