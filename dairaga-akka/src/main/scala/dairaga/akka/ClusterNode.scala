@@ -9,20 +9,46 @@ import org.slf4j.LoggerFactory
 import scala.collection.immutable
 
 /**
+  * Dairaga akka cluster node.
+  *
+  * A dairaga akka cluster node has an intern actor to manage communication between nodes and manage node life cycle.
+  *
   * Created by kigi on 5/8/17.
   */
 trait ClusterNode {
 
   private val log = LoggerFactory.getLogger(classOf[ClusterNode])
 
+  /**
+    * Configuration resource name
+    */
   private var _resource: String = ""
 
+  /**
+    * Node status
+    *
+    * 0x00 is initialized.
+    * 0x01 is started (after invoking run).
+    * 0x02 is terminated.
+    */
   private var _status: Byte = 0x00
 
+  /**
+    * Node is initialized or not.
+    * @return
+    */
   final def initialized: Boolean = _status == 0x00
 
+  /**
+    * Node is started or not.
+    * @return
+    */
   final def started: Boolean = _status == 0x01
 
+  /**
+    * Node is terminated or not.
+    * @return
+    */
   final def terminated: Boolean = _status == 0x02
 
 
@@ -61,6 +87,10 @@ trait ClusterNode {
   def seeds: immutable.Seq[Address]
 
   /* ClusterNode hook functions start */
+
+  /**
+    * it is called when starting a node
+    */
   def preStart(): Unit = Unit
 
   def postStop(): Unit = Unit
@@ -86,14 +116,16 @@ trait ClusterNode {
 
     log.info(s"intern - ${intern.path.toStringWithAddress(cluster.selfAddress)} started")
 
-    afterRun()
     _status = 0x01
+    afterRun()
   }
 
   def shutdown(): Unit = {
     if (!terminated) {
-      AkkaUtils.close(cluster)
-      _status = 0x02
+      AkkaUtils.close(cluster).onComplete { _ =>
+        _status = 0x02
+        postStop()
+      }(system.dispatcher)
     }
   }
 }
