@@ -66,8 +66,7 @@ lazy val akka = project.in(file("dairaga-akka"))
     libraryDependencies ++= akkaHttp ++ akkaCluster ++ Seq(
       logback,
       scalaTest,
-      playJson % Test,
-      logback % Test
+      playJson % Test
     )
   ).dependsOn(common, config, env)
 
