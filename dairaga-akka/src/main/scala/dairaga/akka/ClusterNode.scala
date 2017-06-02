@@ -92,9 +92,7 @@ trait ClusterNode {
 
   def shutdown(): Unit = {
     if (!terminated) {
-      cluster.leave(cluster.selfAddress)
-      //_system.terminate().onComplete(_ => postStop())(_system.dispatcher)
-      system.terminate()
+      AkkaUtils.close(cluster)
       _status = 0x02
     }
   }
