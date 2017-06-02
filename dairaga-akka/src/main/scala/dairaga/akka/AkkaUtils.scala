@@ -66,7 +66,7 @@ object AkkaUtils {
     cluster
   }
 
-  def cluster(seeds: immutable.Seq[Address], name: String = ""): Cluster = cluster(seeds, loadConfig(name))
+  def cluster(seeds: immutable.Seq[Address], resourceName: String = ""): Cluster = cluster(seeds, loadConfig(resourceName))
 
   def close(cluster: Cluster): Future[Terminated] = {
     cluster.leave(cluster.selfAddress)
