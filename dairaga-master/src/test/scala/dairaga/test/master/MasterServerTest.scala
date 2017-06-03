@@ -6,7 +6,7 @@ import akka.testkit.{ImplicitSender, TestKit}
 import akka.util.Timeout
 import com.google.inject.Guice
 import com.typesafe.config.ConfigFactory
-import dairaga.akka.{ClusterNode, XVHeartBeat, XVShutdown}
+import dairaga.akka._
 import dairaga.common.SQLUtils
 import dairaga.data.AkkaSeeds
 import dairaga.master.{MasterActor, MasterNode}
@@ -64,7 +64,7 @@ class MasterServerTest extends TestKit(MasterServerTest.masterNode.system) with 
     "ping other cluster node" in {
       expectNoMsg()  // wait a moment
 
-      masterNode.master ! XVHeartBeat
+      masterNode.master ! XVPing
 
       expectNoMsg()  // wait a moment
 

@@ -59,8 +59,8 @@ trait ClusterNode {
 
   private[dairaga] lazy val intern: ActorRef = system.actorOf(Props(new DairagaActor {
 
-    mediator ! Subscribe(XVClusterInfo, self)
-    mediator ! Publish(XVClusterInfo, XVRegister)
+    mediator ! Subscribe(ClusterInfo, self)
+    mediator ! Publish(ClusterInfo, XVRegister)
 
     override def receive: Receive = {
       case XVPing =>
@@ -84,7 +84,7 @@ trait ClusterNode {
       super.postStop()
     }
 
-  }), XVInternActor/* + dairaga.common.TextUtils.randomAlphaNumeric(16)*/)
+  }), InternActor/* + dairaga.common.TextUtils.randomAlphaNumeric(16)*/)
 
   def seeds: immutable.Seq[Address]
 

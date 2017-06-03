@@ -54,7 +54,7 @@ object AkkaUtils {
     * @param config
     * @return host ip or 127.0.0.1
     */
-  protected def host(config: Config): String = if(config.hasPath(ServerIp)) config.getString(ServerIp)
+  protected def host(config: Config): String = if(config.hasPath(XVServerIp)) config.getString(XVServerIp)
     else address(config).getOrElse("127.0.0.1")
 
 
@@ -67,7 +67,7 @@ object AkkaUtils {
     * @return port number
     */
   protected def port(config: Config): Int =
-    if (config.hasPath(ServerPort)) config.getInt(ServerPort)
+    if (config.hasPath(XVServerPort)) config.getInt(XVServerPort)
     else 30000 + Random.nextInt(20000)
 
 
@@ -136,7 +136,7 @@ object AkkaUtils {
     * @param cluster
     * @return
     */
-  def shutdown(cluster: Cluster, atMost: Duration = TerminateWait): Terminated = {
+  def shutdown(cluster: Cluster, atMost: Duration = XVTerminateWait): Terminated = {
     Await.result(close(cluster), atMost)
   }
 

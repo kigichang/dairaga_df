@@ -10,6 +10,21 @@ import dairaga.data.AkkaSeeds
 import scala.collection.immutable
 
 /**
+  * Akka Seeds implemented with MariaDB
+  *
+  * The table schema
+  *
+  * {{{
+  *   CREATE TABLE `seeds` (
+  *     `address` char(255) NOT NULL,
+  *     `status` smallint(6) NOT NULL DEFAULT 0,
+  *     `created` timestamp NOT NULL DEFAULT current_timestamp(),
+  *     `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  *     PRIMARY KEY (`address`)
+  *   )
+  * }}}
+  *
+  *
   * Created by kigi on 31/05/2017.
   */
 class AkkaSeedsImpl extends AkkaSeeds {

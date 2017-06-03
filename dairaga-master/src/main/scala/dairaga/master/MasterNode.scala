@@ -1,13 +1,20 @@
 package dairaga.master
 
-import javax.inject.{Inject, Singleton}
-
 import akka.actor.{ActorContext, ActorRef, Address}
 import dairaga.akka.ClusterNode
 import dairaga.data.AkkaSeeds
 
 import scala.collection.immutable
+
 /**
+  *
+  * A master node
+  *
+  * The master node will monitor and manage nodes in cluster.
+  *
+  * And master node will be the first seed for cluster,
+  * therefore master node muse be run first as starting a cluster.
+  *
   * Created by kigi on 01/06/2017.
   */
 class MasterNode (val akkaSeeds: AkkaSeeds) extends ClusterNode {

@@ -9,19 +9,24 @@ import org.scalatest.{FlatSpec, Matchers}
 class TestConfig extends FlatSpec with Matchers {
 
   "Resolve config" should "override old value" in {
-    val config = DairagaConfig.resolve(ConfigFactory.parseString(s"""$XVNetworkInterfaces=["test"]"""))
+    /*val config = DairagaConfig.resolve(ConfigFactory.parseString(s"""$XVNetworkInterfaces=["test"]"""))
 
     val list = config.getStringList(XVNetworkInterfaces)
     list.size() should === (1)
     list.get(0) should === ("test")
-    config.getBoolean(XVNetworkAutoDetect) should === (true)
+    config.getBoolean(XVNetworkAutoDetect) should === (true)*/
+
+    val config = DairagaConfig.resolve(ConfigFactory.parseString("dairaga.myvalue=2"))
+
+    config.getInt("dairaga.myvalue") should === (2)
   }
 
   "Load specific configuration" should "contains default value" in {
     val config = DairagaConfig.load("test-config")
 
     config.getBoolean("test") should === (true)
-    config.getBoolean(XVNetworkAutoDetect) should === (true)
+    config.getBoolean("dairaga.test") should === (true)
+    //config.getBoolean(XVNetworkAutoDetect) should === (true)
   }
 
   /*"Load default application config" should "override default value" in {

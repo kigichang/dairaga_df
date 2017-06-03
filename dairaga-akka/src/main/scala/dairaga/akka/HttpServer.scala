@@ -34,9 +34,9 @@ trait HttpServer extends ClusterNode {
 
     val config = system.settings.config
 
-    val host = if (config.hasPath(HttpIp)) config.getString(HttpIp) else cluster.selfAddress.host.getOrElse("127.0.0.1")
+    val host = if (config.hasPath(XVHttpIp)) config.getString(XVHttpIp) else cluster.selfAddress.host.getOrElse("127.0.0.1")
 
-    val port = if (config.hasPath(HttpPort)) config.getInt(HttpPort) else XVHttpPort
+    val port = if (config.hasPath(XVHttpPort)) config.getInt(XVHttpPort) else HttpPort
 
     _binding = Http().bindAndHandle(route, host, port)
   }

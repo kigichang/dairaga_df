@@ -5,10 +5,9 @@ import dairaga.akka._
 import dairaga.cmd.{ConsoleCommand, ConsoleCommands, ExecCommand}
 import dairaga.data.AkkaSeeds
 
-import scala.collection.immutable
-import scala.io.StdIn
-
 /**
+  * A master server to run master node
+  *
   * Created by kigi on 31/05/2017.
   */
 object MasterServer {
@@ -18,12 +17,10 @@ object MasterServer {
 
   val master = new MasterNode(injector.getInstance(classOf[AkkaSeeds]))
 
-  //val url = ConfigFactory.load().getString("dairaga.data.mariadb.url")
-
   def exec(cmd: String): Unit = {
     cmd match {
       case dairaga.cmd.Ping =>
-        master.master ! XVHeartBeat
+        master.master ! XVPing
 
       case dairaga.cmd.Shutdown =>
         master.master ! XVShutdown
