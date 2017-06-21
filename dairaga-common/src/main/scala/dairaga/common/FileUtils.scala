@@ -10,6 +10,7 @@ import scala.util.Try
   */
 object FileUtils extends IOUtils {
 
+  @throws(classOf[Exception])
   def read(file: String, charset: String = "UTF-8"): Array[String] = {
     var src: BufferedSource = null
 
