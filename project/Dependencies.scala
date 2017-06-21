@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  val akkaVersion: String = "2.5.2"
+  val akkaVersion: String = "2.5.3"
 
   lazy val akka: Seq[ModuleID] = Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
