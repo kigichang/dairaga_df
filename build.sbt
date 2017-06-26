@@ -2,7 +2,7 @@ import Dependencies._
 
 name := """dairaga"""
 
-lazy val root = project.in(file(".")).aggregate(env, common, config, data, core, msg, akka, master, collector/*, dashboard*/, gcp, mariadb)
+lazy val root = project.in(file(".")).aggregate(env, common, config, data, core, msg, akka, master, collector, dashboard, gcp, mariadb)
 
 lazy val env = project.in(file("dairaga-env"))
   .disablePlugins(AssemblyPlugin, PlayScala)
@@ -97,19 +97,18 @@ lazy val collector = project.in(file("dairaga-collector"))
     )
   ).dependsOn(akka)
 
-/*lazy val dashboard = project.in(file("dairaga-dashboard"))
+lazy val dashboard = project.in(file("dairaga-dashboard"))
   .enablePlugins(PlayScala)
   .disablePlugins(AssemblyPlugin)
   .settings(
-    resolvers += Resolver.sonatypeRepo("snapshots"),
+    /*resolvers += Resolver.sonatypeRepo("snapshots"),*/
     Common.commonSettings,
     libraryDependencies ++= Seq(
       play.sbt.Play.autoImport.guice,
-      filters,
-      "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M3" % Test
+      "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test
     )
   )
-*/
+
 lazy val mariadb = project.in(file("dairaga-data-mariadb"))
   .disablePlugins(AssemblyPlugin, PlayScala)
   .settings(
