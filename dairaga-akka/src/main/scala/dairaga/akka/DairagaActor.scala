@@ -10,6 +10,8 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.util.control.NonFatal
 
 /**
+  * Dairaga framework actor using Akka Cluster Pub&Sub.
+  *
   * Created by kigi on 09/05/2017.
   */
 trait DairagaActor extends Actor with ActorLogging {
@@ -18,6 +20,7 @@ trait DairagaActor extends Actor with ActorLogging {
 
   protected val mediator: ActorRef = DistributedPubSub(context.system).mediator
 
+  // override supervisor strategy. Resuming child actor when throwing an exception
   override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
     case NonFatal(_) =>
       Resume

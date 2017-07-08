@@ -12,7 +12,6 @@ import scala.collection.immutable
   * Created by kigi on 09/05/2017.
   */
 
-
 object TestNode extends ClusterNode {
   override def seeds: immutable.Seq[Address] = immutable.Seq.empty[Address]
 
