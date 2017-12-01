@@ -8,7 +8,7 @@ object Common {
   lazy val commonSettings = Seq(
     organization := "me.dataforce.dairaga",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.12.2",
+    scalaVersion := "2.12.4",
     parallelExecution in test := false,
     compileOrder in Compile := CompileOrder.Mixed, // change to Mixed for Play
     fork := true
