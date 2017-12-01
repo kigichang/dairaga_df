@@ -105,7 +105,7 @@ lazy val dashboard = project.in(file("dairaga-dashboard"))
     Common.commonSettings,
     libraryDependencies ++= Seq(
       play.sbt.Play.autoImport.guice,
-      "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test
+      "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
     )
   )
 
